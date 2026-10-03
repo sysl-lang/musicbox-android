@@ -10,9 +10,10 @@
 
 import sh.sysl.sdl3.*
 import sh.sysl.sdl3.INIT_VIDEO
-import sh.sysl.skitter.{orient, window_flags, safe_area}
+import sh.sysl.skitter.{logcat, orient, window_flags, safe_area}
 import sh.sysl.musicbox.{parse, Score}
 import sh.sysl.musicbox_miniaudio.{player, Player}
+import sysl.log.{info, warn}
 import sysl.math.min
 
 // Twinkle, Twinkle, Little Star: a bell over a plucked bass. Everything the music says about itself
@@ -33,6 +34,12 @@ const WANTED_H: i32 = 800
 const STRIPS: usize = 48
 
 sdl_main_body() -> i32
+    // **First, because on a phone standard output and standard error go nowhere.** From here every
+    // `sysl.log` record is a logcat entry under `musicbox`, which `adb logcat -s musicbox` follows. On
+    // a desktop this does nothing and records go to standard error as usual.
+    logcat("musicbox")
+    info("start", [("version", __VERSION__)])
+
     orient()
 
     if !init(INIT_VIDEO)
@@ -76,14 +83,24 @@ end sdl_main_body
 toggle(now: Option[&Player], song: Score) -> Option[&Player] = now match
     Some(p) ->
         p.stop()
+        info("stop", [("samples", str(p.played()))])
         None
-    None -> player(song).ok()
+    None ->
+        val opened = player(song).ok()
+
+        if opened.is_some() then info("play", []) else warn("play: the audio device did not open", [])
+        opened
 
 // Once a frame: render ahead, and let the player go once the last note has died away.
 advance(now: Option[&Player]) -> Option[&Player] = now match
     Some(p) ->
         p.pump()
-        if p.done() then None else Some(p)
+
+        if p.done()
+            info("finished", [("samples", str(p.played()))])
+            None
+        else
+            Some(p)
     None -> None
 
 // A square half the safe area's shorter side, in its middle.
