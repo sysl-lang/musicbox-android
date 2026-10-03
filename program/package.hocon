@@ -1,0 +1,28 @@
+// The program: a musicbox score played through miniaudio, with SDL3 drawing the one button.
+//
+// **The `name` here is not what the application is called.** It is the sysl package's own name and
+// nothing reads it — the two names that matter are in `gradle.properties`, one directory up.
+package {
+  name    = "program"
+  version = "0.1.0"
+
+  // musicbox 0.1.3's floor.
+  sysl = "0.0.160"
+}
+
+// **Three coordinates.** Skitter brings SDL3 with it, and musicbox-miniaudio brings miniaudio.
+// musicbox is named on its own because this program imports it for `parse`, and naming 0.1.3 here
+// lifts the 0.1.0 that musicbox-miniaudio asks for: one build carries one version of a package, the
+// newest any manifest names.
+dependencies {
+  skitter            { git = "github.com/sysl-lang/skitter", version = "0.1.0" }
+  musicbox           { git = "github.com/sysl-lang/musicbox", version = "0.1.3" }
+  musicbox-miniaudio { git = "github.com/sysl-lang/musicbox-miniaudio", version = "0.1.0" }
+}
+
+// What SDL3 and miniaudio require, restated because a program reaching a gated module has to say so
+// too. Android answers both: Bionic is POSIX, and `Os.Android` is in the compiler's POSIX set.
+requires {
+  heap  = true
+  posix = true
+}

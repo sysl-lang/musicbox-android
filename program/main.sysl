@@ -1,0 +1,127 @@
+// A music box on a phone: one button, and a tune written in musicbox's notation.
+//
+// **Two threads, and only one of them is this program's.** miniaudio asks for samples on its own
+// audio thread; the synthesizer stays here, on SDL's main thread, and `pump` renders ahead into a
+// ring the audio thread reads. Once a frame is plenty, so the frame loop that draws the button is
+// also the loop that keeps the music fed — there is no second loop to write.
+//
+// **Android has no `main`.** `SDLActivity` loads `libmain.so` and looks up `SDL_main`, and `@export`
+// publishes exactly that symbol, which is why this repository carries no C.
+
+import sh.sysl.sdl3.*
+import sh.sysl.sdl3.INIT_VIDEO
+import sh.sysl.skitter.{orient, window_flags, safe_area}
+import sh.sysl.musicbox.{parse, Score}
+import sh.sysl.musicbox_miniaudio.{player, Player}
+import sysl.math.min
+
+// Twinkle, Twinkle, Little Star: a bell over a plucked bass. Everything the music says about itself
+// is in the text, so changing the tune is changing this and nothing else.
+tune() -> string = raw"""
+    [tempo 100]
+    << [instrument bell] [octave 5]
+       c4 c g g a a g2 f4 f e e d d c2
+     | [instrument pluck] [octave 3] [volume 0.7]
+       c2 e f e d g c1 >>
+    """
+
+// What the window is asked for. Android answers with the screen; on a desktop these are its size.
+const WANTED_W: i32 = 400
+const WANTED_H: i32 = 800
+
+// The play triangle is drawn as this many vertical strips, each a little shorter than the last.
+const STRIPS: usize = 48
+
+sdl_main_body() -> i32
+    orient()
+
+    if !init(INIT_VIDEO)
+        return 1
+
+    val song = parse(tune()).expect("the built-in tune parses")
+    val window = create_window("musicbox", WANTED_W, WANTED_H, window_flags()).expect("a window")
+    val renderer = window.create_renderer().expect("a renderer")
+
+    renderer.set_vsync(true)
+
+    // `Some` while a tune is sounding. Dropping the last `&Player` closes the audio device, so
+    // setting this back to `None` is what stops the hardware.
+    var playing: Option[&Player] = None
+    var running = true
+
+    while running
+        // **Asked every frame**, since turning the phone changes both the drawable and the bars.
+        val safe = safe_area(renderer)
+        val button = button_rect(safe)
+
+        loop
+            poll_event() match
+                Some(e) ->
+                    if e.kind() == EventKind.Quit then running = false
+                    elif e.kind() == EventKind.MouseButtonDown && inside(button, e.mouse_x(), e.mouse_y())
+                        playing = toggle(playing, song)
+                None -> break
+
+        playing = advance(playing)
+
+        draw(renderer, safe, button, playing.is_some())
+        renderer.present()
+
+    quit()
+    0
+end sdl_main_body
+
+// A tap on the button: stop what is playing, or open the device and start the tune from the top.
+// A device that will not open leaves the button showing play, which is the honest answer.
+toggle(now: Option[&Player], song: Score) -> Option[&Player] = now match
+    Some(p) ->
+        p.stop()
+        None
+    None -> player(song).ok()
+
+// Once a frame: render ahead, and let the player go once the last note has died away.
+advance(now: Option[&Player]) -> Option[&Player] = now match
+    Some(p) ->
+        p.pump()
+        if p.done() then None else Some(p)
+    None -> None
+
+// A square half the safe area's shorter side, in its middle.
+button_rect(safe: FRect) -> FRect
+    val side = min(safe.w, safe.h) * 0.5
+    FRect(safe.x + (safe.w - side) * 0.5, safe.y + (safe.h - side) * 0.5, side, side)
+
+// SDL turns a tap into a mouse press, at a position in the same pixels the renderer draws in.
+inside(r: FRect, x: f32, y: f32) -> bool = x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h
+
+draw(r: &Renderer, safe: FRect, b: FRect, playing: bool)
+    r.clear_to(rgb(10, 11, 15))
+
+    r.set_draw_color(rgb(28, 31, 42))
+    r.fill_rect(safe.x, safe.y, safe.w, safe.h)
+
+    r.set_draw_color(if playing then rgb(72, 38, 44) else rgb(34, 62, 48))
+    r.fill_rect(b.x, b.y, b.w, b.h)
+
+    val g = b.w * 0.4
+    val gx = b.x + (b.w - g) * 0.5
+    val gy = b.y + (b.h - g) * 0.5
+
+    if playing
+        r.set_draw_color(rgb(240, 110, 110))
+        r.fill_rect(gx, gy, g, g)
+    else
+        r.set_draw_color(rgb(120, 230, 150))
+        play_glyph(r, gx, gy, g)
+end draw
+
+// A triangle pointing right, as strips that shrink toward its tip.
+play_glyph(r: &Renderer, x: f32, y: f32, side: f32)
+    val strip = side / f32(STRIPS)
+
+    for i in 0..<STRIPS
+        val h = side * (1.0 - f32(i) / f32(STRIPS))
+        r.fill_rect(x + f32(i) * strip, y + (side - h) * 0.5, strip + 1.0, h)
+
+@export("SDL_main")
+sdl_main(argc: i32, argv: **u8) -> i32 = sdl_main_body()
