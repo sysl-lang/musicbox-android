@@ -4,7 +4,7 @@
 // nothing reads it — the two names that matter are in `gradle.properties`, one directory up.
 package {
   name    = "program"
-  version = "0.1.1"
+  version = "0.1.2"
 
   // skitter 0.3.0's floor: `logcat` needs sysl 0.0.161.
   sysl = "0.0.161"
@@ -15,7 +15,7 @@ package {
 // lifts the 0.1.0 that musicbox-miniaudio asks for: one build carries one version of a package, the
 // newest any manifest names.
 dependencies {
-  skitter            { git = "github.com/sysl-lang/skitter", version = "0.3.0" }
+  skitter            { git = "github.com/sysl-lang/skitter", version = "0.3.1" }
   musicbox         { git = "github.com/sysl-lang/musicbox", version = "0.1.3" }
   musicbox-miniaudio { git = "github.com/sysl-lang/musicbox-miniaudio", version = "0.1.0" }
 }

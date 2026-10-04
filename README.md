@@ -78,7 +78,7 @@ An emulator works, and it has to be an **arm64** one: sysl has one Android targe
 
 ```hocon
 dependencies {
-  skitter            { git = "github.com/sysl-lang/skitter", version = "0.3.0" }
+  skitter            { git = "github.com/sysl-lang/skitter", version = "0.3.1" }
   musicbox           { git = "github.com/sysl-lang/musicbox", version = "0.1.3" }
   musicbox-miniaudio { git = "github.com/sysl-lang/musicbox-miniaudio", version = "0.1.0" }
 }
