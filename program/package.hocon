@@ -14,7 +14,7 @@ package {
 // musicbox is named on its own because this program imports it for `parse`; one build carries one
 // version of a package, the newest any manifest names.
 dependencies {
-  skitter            { git = "github.com/sysl-lang/skitter", version = "0.3.2" }
+  skitter            { git = "github.com/sysl-lang/skitter", version = "0.3.3" }
   musicbox         { git = "github.com/sysl-lang/musicbox", version = "0.1.4" }
   musicbox-miniaudio { git = "github.com/sysl-lang/musicbox-miniaudio", version = "0.1.1" }
 }
