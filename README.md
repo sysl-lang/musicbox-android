@@ -6,6 +6,8 @@ renders it, and [musicbox-miniaudio](https://github.com/sysl-lang/musicbox-minia
 [miniaudio](https://github.com/sysl-lang/miniaudio) — which on Android opens an AAudio stream (or
 OpenSL ES on a phone without one).
 
+*An independent sysl package for Android. It is not affiliated with or endorsed by Google.*
+
 The project is [skitter-app](https://github.com/sysl-lang/skitter-app) with two lines of
 `gradle.properties` and the program changed, so everything skitter-app's README says about building
 holds here. The whole program is [`program/main.sysl`](program/main.sysl).
