@@ -83,7 +83,7 @@ end sdl_main_body
 toggle(now: Option[&Player], song: Score) -> Option[&Player] = now match
     Some(p) ->
         p.stop()
-        info("stop", [("samples", str(p.played()))])
+        info("stop", [("samples", p.played().to_string())])
         None
     None ->
         val opened = player(song).ok()
@@ -97,7 +97,7 @@ advance(now: Option[&Player]) -> Option[&Player] = now match
         p.pump()
 
         if p.done()
-            info("finished", [("samples", str(p.played()))])
+            info("finished", [("samples", p.played().to_string())])
             None
         else
             Some(p)

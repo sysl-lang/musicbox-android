@@ -76,7 +76,7 @@ An emulator works, and it has to be an **arm64** one: sysl has one Android targe
 
 ## Dependencies
 
-`program/package.hocon` names three coordinates:
+`program/sysl.hocon` names three coordinates:
 
 ```hocon
 dependencies {
