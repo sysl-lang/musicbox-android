@@ -1,7 +1,8 @@
 github.com/sysl-lang/miniaudio v0.1.2 sha256:960599302d1e51ff62861509f6ff277836debb2602628afc57d57efba6c19faf
-github.com/sysl-lang/musicbox v0.1.5 sha256:f9f4f3bfbd1b6d7fc376fd6a48a5e91a07e4f8b9bc92baae3e19e3aca7274d4a
-github.com/sysl-lang/musicbox-miniaudio v0.1.2 sha256:aaa014d1122b30628ae8889a89dc1e2b979a20d48f3414d93617c35f32c4eecf
-github.com/sysl-lang/parsing v0.13.2 sha256:05d41aa60754f7324c73b32a5cc1a546e71cea8120d15080385e8883e04cbce8
-github.com/sysl-lang/sdl3 v0.3.11 sha256:ddfec9152616d354a488ad9c34fddcc9058b14e1fdbf40f4a5fab1a7214bb170
-github.com/sysl-lang/skitter v0.3.4 sha256:96ef1b599e561f42f61867740a0048349b05706bee0d53a2ecc3a2de5cc9f192
-github.com/sysl-lang/toml v0.1.4 sha256:459fd45c4d0a721e67b2ecca417732f1a726bf38705d331e8d452fe4370a3683
+github.com/sysl-lang/musicbox v0.1.7 sha256:d6e08aa2b122a0a8169281168f04d286e77c31cd96ac8ebaeb123f718644838b
+github.com/sysl-lang/musicbox-miniaudio v0.1.4 sha256:62db15a59d03455cf6573f5a6cd51a1e7c38ad3b5c3f59d9ae5536e7cdd098f5
+github.com/sysl-lang/parsing v0.14.1 sha256:a8da830d00560772bc997c0f58d61d22a65fdcabd66c95c685528eb241c08038
+github.com/sysl-lang/png v0.2.3 sha256:dfca3904935431bf4a72eb3335971b4944ee02489d443b064b507f610f0e6ebe
+github.com/sysl-lang/sdl3 v0.3.24 sha256:ebc146f3729c58e3c8a1bdac7d4849d1f667f410eeb3027b1cd9cbb625540e98
+github.com/sysl-lang/skitter v0.3.6 sha256:8432ab7c061648ad3f98448ca57ce7c6d7fc592c1ed45c85a392c0089db75afd
+github.com/sysl-lang/toml v0.1.5 sha256:5d618ec1c07ca104a8e5b4b7f90b25a1c413c3be836767c46a3065ebc9f527c1

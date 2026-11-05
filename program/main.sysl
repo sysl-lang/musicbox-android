@@ -105,7 +105,7 @@ advance(now: Option[&Player]) -> Option[&Player] = now match
 
 // A square half the safe area's shorter side, in its middle.
 button_rect(safe: FRect) -> FRect
-    val side = min(safe.w, safe.h) * 0.5
+    val side = safe.w.min(safe.h) * 0.5
     FRect(safe.x + (safe.w - side) * 0.5, safe.y + (safe.h - side) * 0.5, side, side)
 
 // SDL turns a tap into a mouse press, at a position in the same pixels the renderer draws in.
